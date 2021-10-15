@@ -21,7 +21,7 @@ resource "helm_release" "cert_manager" {
   namespace  = kubernetes_namespace.cert_manager.metadata.0.name
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = "v1.5.3"
+  version    = "~> 1.5.3"
 
   wait          = false
   wait_for_jobs = false

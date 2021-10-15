@@ -12,7 +12,7 @@ resource "helm_release" "ingress_nginx" {
   namespace  = kubernetes_namespace.ingress.metadata.0.name
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
-  version    = "4.0.5"
+  version    = "~> 4.0.5"
 
   wait = false
 

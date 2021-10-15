@@ -16,7 +16,7 @@ resource "helm_release" "kube_prometheus" {
   namespace  = kubernetes_namespace.monitoring.metadata.0.name
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
-  version    = "18.0.6"
+  version    = "~> 18.0.6"
 
   wait          = false
   wait_for_jobs = false

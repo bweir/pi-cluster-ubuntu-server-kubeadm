@@ -4,7 +4,7 @@
 locals {
   rook_domain      = "rook.${local.domain}"
   rook_domain_slug = "rook-${local.domain_slug}"
-  rook_version     = "v1.7.4"
+  rook_version     = "~> 1.7.4"
 }
 
 resource "kubernetes_namespace" "rook" {

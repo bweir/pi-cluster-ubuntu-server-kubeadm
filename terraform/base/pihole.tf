@@ -21,7 +21,7 @@ resource "helm_release" "pihole" {
   namespace  = kubernetes_namespace.pihole.metadata.0.name
   repository = "https://mojo2600.github.io/pihole-kubernetes/"
   chart      = "pihole"
-  version    = "2.4.2"
+  version    = "~> 2.4.2"
 
   wait = false
 
