@@ -26,7 +26,8 @@ resource "helm_release" "kube_prometheus" {
       ingress = {
         enabled = true
         annotations = {
-          "kubernetes.io/ingress.class" = "nginx"
+          "kubernetes.io/ingress.class"    = "nginx"
+          "cert-manager.io/cluster-issuer" = "letsencrypt-production"
         }
         hosts = [
           local.grafana_domain,

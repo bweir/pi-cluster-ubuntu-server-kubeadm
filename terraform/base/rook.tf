@@ -155,7 +155,8 @@ resource "helm_release" "rook_cluster" {
     ingress = {
       dashboard = {
         annotations = {
-          "kubernetes.io/ingress.class" = "nginx"
+          "kubernetes.io/ingress.class"    = "nginx"
+          "cert-manager.io/cluster-issuer" = "letsencrypt-production"
         }
         host = {
           name = local.rook_domain

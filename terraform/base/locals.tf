@@ -1,5 +1,5 @@
 locals {
-  domain      = "bweir.dev"
+  domain      = "homelab.bweir.dev"
   domain_slug = replace(local.domain, ".", "-")
 
   dns_ip     = "192.168.1.5"

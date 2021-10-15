@@ -52,7 +52,8 @@ resource "helm_release" "pihole" {
     ingress = {
       enabled = true
       annotations = {
-        "kubernetes.io/ingress.class" = "nginx"
+        "kubernetes.io/ingress.class"    = "nginx"
+        "cert-manager.io/cluster-issuer" = "letsencrypt-production"
       }
       hosts = [
         local.pihole_domain,
