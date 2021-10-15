@@ -18,4 +18,11 @@ repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: "v1.52.0"
     hooks:
+      - id: terraform_docs
       - id: terraform_fmt
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.1.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
