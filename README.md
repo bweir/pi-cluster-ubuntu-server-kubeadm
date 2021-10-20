@@ -1,4 +1,4 @@
-# cluster-pi-kubeadm
+# pi-cluster-kubeadm
 
 Raspberry Pi Kubernetes cluster, provisioned with Ansible + Terraform + Kubeadm, on Ubuntu Server.
 
