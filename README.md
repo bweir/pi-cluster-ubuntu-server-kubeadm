@@ -1,6 +1,6 @@
-# bweir / homelab
+# cluster-pi-kubeadm
 
-My "on-prem" infrastructure platform.
+Raspberry Pi Kubernetes cluster, provisioned with Ansible + Terraform + Kubeadm, on Ubuntu Server.
 
 ![](docs/images/cluster1.jpg)
 
