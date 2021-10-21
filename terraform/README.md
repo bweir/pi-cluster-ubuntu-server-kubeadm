@@ -1,6 +1,20 @@
 # terraform / base
 
-Base cluster applications.
+Base cluster applications:
+
+- [Cilium](https://cilium.io/) for pod networking
+
+- [cert-manager](https://cert-manager.io/) for certificate provisioning, with Let's Encrypt issuers
+
+- [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) as an ingress controller
+
+- [MetalLB](https://metallb.universe.tf/) for bare metal load balancing
+
+- [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) for cluster monitoring
+
+- [Pi-hole](https://pi-hole.net/) for home network DNS
+
+- [Rook](https://rook.io/) as a storage provider
 
 <!-- prettier-ignore-start -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -31,7 +45,6 @@ No modules.
 | [helm_release.metallb](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.pihole](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.rook](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [helm_release.rook_cluster](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_manifest.production_issuer](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_manifest.staging_issuer](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 | [kubernetes_namespace.cert_manager](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |

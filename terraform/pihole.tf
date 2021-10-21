@@ -79,7 +79,7 @@ resource "helm_release" "pihole" {
     }
 
     persistentVolumeClaim = {
-      enabled = true
+      enabled = false
       accessModes = [
         "ReadWriteMany",
       ]
