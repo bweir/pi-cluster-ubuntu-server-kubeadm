@@ -1,5 +1,20 @@
 # Cluster Setup
 
+## Ansible setup
+
+Change to the `ansible` directory and install the dependencies:
+
+```
+cd ansible/
+pip3 install -r requirements.txt
+```
+
+Install the Ansible collections:
+
+```
+ansible-galaxy collection install -r requirements.yml
+```
+
 ## Create an SSH key
 
 This is probably my favorite place on the Internet to look this up:
