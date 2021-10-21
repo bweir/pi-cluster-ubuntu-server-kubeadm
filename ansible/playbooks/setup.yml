@@ -1,0 +1,137 @@
+- hosts: cluster
+  become: true
+  handlers:
+    - name: restart sshd
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
+
+    - name: reboot
+      ansible.builtin.reboot:
+
+  tasks:
+    - name: disable ssh password authentication
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/10-ansible
+        mode: 0644
+        content: |
+          PasswordAuthentication no
+      notify:
+        - restart sshd
+
+    - name: disable systemd DNS stub listener
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: "^DNSStubListener="
+        line: "DNSStubListener=no"
+
+    - name: configure DNS
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: "^DNS="
+        line: "DNS={{ gateway }}"
+
+    - name: add systemd symlink
+      ansible.builtin.file:
+        src: /run/systemd/resolve/resolv.conf
+        dest: /etc/resolv.conf
+        owner: root
+        group: root
+        state: link
+        force: true
+      # notify:
+      #   - reboot
+
+    - name: configure kernel command line
+      ansible.builtin.copy:
+        dest: /boot/firmware/cmdline.txt
+        mode: 0644
+        content: >
+          net.ifnames=0
+          dwc_otg.lpm_enable=0
+          console=serial0,115200
+          console=tty1
+          root=LABEL=writable
+          rootfstype=ext4
+          elevator=deadline
+          rootwait
+          fixrtc
+          cgroup_enable=cpuset
+          cgroup_enable=memory
+          cgroup_enable=hugetlb
+      notify:
+        - reboot
+
+    - name: load modules on startup
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/k8s.conf
+        content: |
+          br_netfilter
+          overlay
+
+    - name: load modules now
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - br_netfilter
+        - overlay
+
+    - name: set up bridge network
+      ansible.builtin.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        sysctl_set: true
+      with_items:
+        - name: net.bridge.bridge-nf-call-iptables
+          value: "1"
+        - name: net.bridge.bridge-nf-call-ip6tables
+          value: "1"
+        - name: net.ipv4.ip_forward
+          value: "1"
+        - name: net.ipv6.conf.all.forwarding
+          value: "1"
+
+    - name: install packages
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - avahi-daemon
+          - ca-certificates
+          - containerd
+          - jq
+          - curl
+          - lvm2
+          - net-tools
+          - unattended-upgrades
+          - update-notifier-common
+        state: present
+
+    - name: add kube apt key
+      ansible.builtin.apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+
+    - name: add kube apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+        state: present
+
+    - name: install kube packages
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - kubeadm={{ kubeadm_version }}
+          - kubectl={{ kubeadm_version }}
+          - kubelet={{ kubeadm_version }}
+        state: present
+
+    - name: hold kube package versions
+      ansible.builtin.dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      with_items:
+        - kubeadm
+        - kubectl
+        - kubelet

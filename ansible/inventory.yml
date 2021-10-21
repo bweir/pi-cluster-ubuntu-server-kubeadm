@@ -1,0 +1,36 @@
+all:
+  children:
+    localhost:
+      hosts:
+        127.0.0.1:
+      vars:
+        ansible_become: false
+    cluster:
+      vars:
+        ansible_user: ubuntu
+        ansible_ssh_private_key_file: ./id_ed25519
+        ansible_ssh_pipelining: true
+        gateway: "192.168.1.1"
+        loadbalancer: "192.168.1.2"
+        kubeadm_version: "1.22.1-00"
+      children:
+        controlplane:
+          children:
+            control-1:
+              hosts:
+                192.168.1.20:
+                  hostname: pi-cluster-control
+        workers:
+          children:
+            worker-1:
+              hosts:
+                192.168.1.21:
+                  hostname: pi-cluster-worker-1
+            worker-2:
+              hosts:
+                192.168.1.22:
+                  hostname: pi-cluster-worker-2
+            worker-3:
+              hosts:
+                192.168.1.23:
+                  hostname: pi-cluster-worker-3

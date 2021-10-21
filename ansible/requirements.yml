@@ -1,0 +1,12 @@
+collections:
+  # https://galaxy.ansible.com/community/general
+  - name: community.general
+    version: 3.5.0
+
+  # https://galaxy.ansible.com/kubernetes/core
+  - name: kubernetes.core
+    version: 2.2.0
+
+  # https://galaxy.ansible.com/community/network
+  - name: community.network
+    version: 3.0.0

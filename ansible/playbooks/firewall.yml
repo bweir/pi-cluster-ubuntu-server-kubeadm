@@ -1,0 +1,139 @@
+# https://docs.ansible.com/ansible/latest/collections/community/general/ufw_module.html
+- hosts: controlplane
+  become: true
+  gather_facts: false
+  tasks:
+    - name: allow SSH
+      community.general.ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+        direction: in
+
+    - name: allow Kubernetes API server
+      community.general.ufw:
+        rule: allow
+        port: "6443"
+        proto: tcp
+        direction: in
+
+    - name: allow etcd server client API
+      community.general.ufw:
+        rule: allow
+        port: "2379:2380"
+        proto: tcp
+        direction: in
+
+    - name: allow kubelet API
+      community.general.ufw:
+        rule: allow
+        port: "10250"
+        proto: tcp
+        direction: in
+
+    - name: allow kube-scheduler
+      community.general.ufw:
+        rule: allow
+        port: "10251"
+        proto: tcp
+        direction: in
+
+    - name: allow kube-controller-manager
+      community.general.ufw:
+        rule: allow
+        port: "10252"
+        proto: tcp
+        direction: in
+
+    - name: allow validating webhook port from workers
+      community.general.ufw:
+        rule: allow
+        port: "8443"
+        src: "{{ item }}"
+      loop:
+        - "192.168.1.21"
+        - "192.168.1.22"
+        - "192.168.1.23"
+
+    - name: deny everything incoming
+      community.general.ufw:
+        policy: deny
+        direction: incoming
+
+    - name: allow everything outgoing
+      community.general.ufw:
+        policy: allow
+        direction: outgoing
+
+    - name: enable ufw
+      community.general.ufw:
+        state: disabled
+
+- hosts: workers
+  become: true
+  tasks:
+    - name: allow SSH
+      community.general.ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+        direction: in
+
+      # enable host port for pet DNS node
+    - name: allow DNS TCP
+      community.general.ufw:
+        rule: allow
+        port: "53"
+        proto: tcp
+        direction: in
+        delete: yes
+
+    - name: allow DNS UDP
+      community.general.ufw:
+        rule: allow
+        port: "53"
+        proto: udp
+        direction: in
+        delete: yes
+
+    - name: allow memberlist TCP
+      community.general.ufw:
+        rule: allow
+        port: "7946"
+        proto: tcp
+        direction: in
+
+    - name: allow memberlist UDP
+      community.general.ufw:
+        rule: allow
+        port: "7946"
+        proto: udp
+        direction: in
+
+    - name: allow kubelet API
+      community.general.ufw:
+        rule: allow
+        port: "10250"
+        proto: tcp
+        direction: in
+
+    - name: allow NodePort services
+      community.general.ufw:
+        rule: allow
+        port: "30000:32767"
+        proto: tcp
+        direction: in
+
+    - name: deny everything incoming
+      community.general.ufw:
+        policy: deny
+        direction: incoming
+
+    - name: allow everything outgoing
+      community.general.ufw:
+        policy: allow
+        direction: outgoing
+
+    - name: enable ufw
+      community.general.ufw:
+        state: disabled

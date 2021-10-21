@@ -1,0 +1,29 @@
+- hosts: cluster
+  become: true
+  handlers:
+    - name: netplan apply
+      ansible.builtin.command:
+        argv: [netplan, apply]
+
+  tasks:
+    - name: configure network
+      ansible.builtin.template:
+        src: ../files/50-cloud-init.yaml
+        dest: /etc/netplan/50-cloud-init.yaml
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - netplan apply
+
+    - name: configure hosts file
+      ansible.builtin.template:
+        src: ../files/hosts
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: "set hostname to {{ hostname }}"
+      ansible.builtin.hostname:
+        name: "{{ hostname }}"

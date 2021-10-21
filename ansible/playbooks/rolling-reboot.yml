@@ -1,0 +1,16 @@
+- hosts: cluster
+  become: true
+  serial: 1
+  tasks:
+    - name: "cordon {{ hostname }}"
+      command: kubectl cordon {{ hostname }}
+      delegate_to: localhost
+      become: false
+
+    - name: reboot
+      ansible.builtin.reboot:
+
+    - name: "uncordon {{ hostname }}"
+      command: kubectl uncordon {{ hostname }}
+      delegate_to: localhost
+      become: false
