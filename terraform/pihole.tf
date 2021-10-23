@@ -45,7 +45,7 @@ resource "helm_release" "pihole" {
       ]
     }
 
-    replicaCount = 3
+    replicaCount = 1
 
     virtualHost = local.pihole_domain
 
