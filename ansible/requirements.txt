@@ -4,9 +4,9 @@
 #
 #    pip-compile
 #
-ansible==4.7.0
+ansible==7.0.0
     # via -r requirements.in
-ansible-core==2.11.6
+ansible-core==2.14.1
     # via ansible
 cachetools==4.2.4
     # via google-auth
